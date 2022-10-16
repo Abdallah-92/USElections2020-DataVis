@@ -1,0 +1,88 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Average income per person in the US by state (2011-2021)",
+  "width": "600",
+  "height": "300",
+  "params": [
+    {
+      "name": "year_",
+      "value": 2021,
+      "bind": {
+        "input": "range",
+        "min": 2011,
+        "max": 2021,
+        "step": 1,
+        "name": "Income by Year:  "
+      }
+    }
+  ],
+  "projection": {"type": "albersUsa"},
+  "layer": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/Abdallah-92/US_GDP-DataVis/main/ne_110m.json",
+        "format": {
+          "type": "topojson",
+          "feature": "ne_110m_admin_1_states_provinces"
+        }
+      },
+      "transform": [
+        {
+          "calculate": "'Data is not available in ' + datum.properties.name",
+          "as": "note"
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "fill": "#ddd",
+        "stroke": "white",
+        "strokeWidth": 1
+      },
+      "encoding": {"tooltip": {"field": "note"}}
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/Abdallah-92/US_GDP-DataVis/main/Income.csv"
+      },
+      "transform": [
+        {
+          "lookup": "State",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/Abdallah-92/US_GDP-DataVis/main/ne_110m.json",
+              "format": {
+                "type": "topojson",
+                "feature": "ne_110m_admin_1_states_provinces"
+              }
+            },
+            "key": "properties.name"
+          },
+          "as": "geo"
+        },
+        {"filter": "datum.Year == year_"}
+      ],
+      "mark": {"type": "geoshape", "stroke": "#000000", "strokeWidth": 0.5},
+      "encoding": {
+        "shape": {"field": "geo", "type": "geojson"},
+        "color": {
+          "field": "Income",
+          "type": "quantitative",
+          "title": "Income",
+          "scale": {"domain": [10000, 2000000], "scheme": "reds"},
+          "legend": {"format": ".2s"}
+        },
+        "tooltip": [
+          {"field": "State", "type": "nominal", "title": "State"},
+          {
+            "field": "Income",
+            "type": "quantitative",
+            "title": "Income",
+            "format": ","
+          },
+          {"field": "Year", "type": "quantitative", "title": "Year"}
+        ]
+      }
+    }
+  ],
+  "config": {}
+}

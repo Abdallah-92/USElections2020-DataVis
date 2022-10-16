@@ -1,0 +1,12 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "height": 350,
+  "width": 600,
+  "description": "Google's stock price over time.",
+  "data": {"url": "https://raw.githubusercontent.com/Abdallah-92/US_GDP-DataVis/main/GDP_Avg.csv"},
+  "mark": {"type": "line", "color": "red"},
+  "encoding": {
+    "x": {"field": "Year", "type": "temporal"},
+    "y": {"field": "GDP_Average", "type": "quantitative","scale":{"domain":[300000,400000]}}
+  }
+}
